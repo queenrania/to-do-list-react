@@ -9,6 +9,7 @@ An interactive Todo List application built to practice state management, event h
 * Mark as completed
 * Delete individual list items
 * Clear all completed list items
+* Clear all list items at once (Reset slate)
 * Display the number of remaining list items
 * Remember list items using localStorage
 * Responsive layout
@@ -23,7 +24,7 @@ An interactive Todo List application built to practice state management, event h
 State represents the single source of truth for your data. When state updates, React handles updating the screen automatically.
 
 * `task`: Tracks user input letter-by-letter as they type.
-* `todos`: An array holding all active tasks.
+* `todos`: An array holding all active tasks. Starts as a clean, blank array `[]` unless data exists in local storage.
 
 ### State Object Paradigm Shift
 
@@ -146,6 +147,12 @@ const clearAll = () => {
   setTodos([]); // Overwrites the list with a fresh, empty container
 };
 ```
+
+### Accessibility & Assistive Tech Rules (a11y)
+
+Writing semantic tags isn't enough when application interfaces shift elements on screen dynamically. We handle screen reader context explicitly:
+* **`aria-label`**: Conveys real context dynamically back to headsets (e.g., announcing exactly which unique task name a specific loop button is trying to `Delete`).
+* **`aria-live="polite"`**: Stands guard over our numeric summary tally, triggering immediate vocal announcements to screen reader users whenever item state mutations rewrite the numeric text node counts.
 
 ## Tech Stack
 

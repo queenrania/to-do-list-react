@@ -59,88 +59,101 @@ export default function TodoApp() {
 
   return (
     <div>
+      {/* Background Title matching the Image */}
       <div className="app-header">
         <h1>To Do List</h1>
         <div className="underline"></div>
       </div>
 
-      <div className="todo-container">
+      {/* Main Floating Card Container */}
+      {/* 💡 Role="main" helps screen readers identify the core content zone instantly */}
+      <div className="todo-container" role="main">
+        
+        {/* Input Field Form */}
         <div className="input-group">
-          <input
-            type="text"
-            value={task}
-            onChange={(e) => setTask(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Enter a new to do..."
+          <input 
+            type="text" 
+            value={task} 
+            onChange={(e) => setTask(e.target.value)} 
+            onKeyDown={handleKeyDown} 
+            placeholder="Enter a new to do..." 
+            id="todo-input"
+            aria-label="New to-do item text input" /* 💡 Tells screen readers exactly what this textbox does */
           />
-          <button className="add-btn" onClick={addTask}>
-            Add
+          <button 
+            className="add-btn" 
+            onClick={addTask}
+            aria-controls="todo-list" /* 💡 Informs assistive tech that clicking this alters the list below */
+          >
+            Add To Do
           </button>
         </div>
 
+        {/* Dynamic Items Counter Row */}
         <div className="stats-bar">
-          <span>
-            {remainingCount} {remainingCount === 1 ? "item" : "items"} remaining
+          {/* 💡 Aria-live="polite" tells screen readers to read this out loud whenever the number changes */}
+          <span id="todo-stats" aria-live="polite">
+            {remainingCount} {remainingCount === 1 ? 'item' : 'items'} remaining
           </span>
         </div>
 
-        {/* Dynamic Task List or Empty Message */}
-        {todos.map((todo, index) => (
-          <li key={index} className={todo.completed ? "completed-item" : ""}>
-            {/* 💡 Explicitly add width: 100% and overflow: hidden to the wrapper row */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                width: "100%",
-                minWidth: 0,
-                overflow: "hidden",
-              }}
-            >
-              <input
-                type="checkbox"
-                checked={todo.completed}
-                onChange={() => toggleComplete(index)}
-                style={{
-                  flexShrink: 0,
-                  width: "18px",
-                  height: "18px",
-                  margin: 0,
-                  cursor: "pointer",
-                }}
-              />
-
-              {/* 💡 Simplify the span style to let text wrap cleanly without shifting the checkbox */}
-              <span
-                style={{
-                  textDecoration: todo.completed ? "line-through" : "none",
-                  color: todo.completed ? "#9ca3af" : "#1f2937",
-                  wordBreak: "break-word",
-                  paddingLeft:
-                    "4px" /* Adds a tiny bit of breathing room from the checkbox */,
-                }}
-              >
-                {todo.text}
-              </span>
-            </div>
-            <button className="delete-btn" onClick={() => deleteTask(index)}>
-              Delete
-            </button>
-          </li>
-        ))}
+        {todos.length === 0 ? (
+          <div className="empty-message" role="status">No todos yet. Add one above!</div>
+        ) : (
+          /* 💡 Added id so our add button knows which specific element it controls */
+          <ul id="todo-list">
+            {todos.map((todo, index) => (
+              <li key={index} className={todo.completed ? 'completed-item' : ''}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%', minWidth: 0, overflow: 'hidden' }}>
+                  
+                  <input 
+                    type="checkbox" 
+                    checked={todo.completed} 
+                    onChange={() => toggleComplete(index)}
+                    style={{ flexShrink: 0, width: '18px', height: '18px', margin: 0, cursor: 'pointer' }} 
+                    id={`checkbox-${index}`}
+                    aria-label={`Mark "${todo.text}" as complete`} /* 💡 Gives clear context instead of just reading "checkbox" */
+                  />
+                  
+                  <span style={{ 
+                    textDecoration: todo.completed ? 'line-through' : 'none', 
+                    color: todo.completed ? '#9ca3af' : '#1f2937',
+                    wordBreak: 'break-word',
+                    paddingLeft: '4px'
+                  }}>
+                    {todo.text}
+                  </span>
+                </div>
+                <button 
+                  className="delete-btn" 
+                  onClick={() => deleteTask(index)}
+                  aria-label={`Delete "${todo.text}"`} /* 💡 Tells screen readers exactly which item is being dropped */
+                >
+                  Delete
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
 
         {/* Bottom Actions Area */}
         {todos.length > 0 && (
           <div className="bottom-actions">
             {todos.some((todo) => todo.completed) && (
-              <button className="clear-btn" onClick={clearCompleted}>
+              <button 
+                className="clear-btn" 
+                onClick={clearCompleted}
+                aria-label="Clear all completed items from the list"
+              >
                 Clear Completed
               </button>
             )}
 
-            {/* Ensure this class setup matches exactly */}
-            <button className="clear-btn clear-all-btn" onClick={clearAll}>
+            <button 
+              className="clear-btn clear-all-btn" 
+              onClick={clearAll}
+              aria-label="Wipe out all items and reset the list completely"
+            >
               Clear All
             </button>
           </div>
